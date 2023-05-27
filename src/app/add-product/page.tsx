@@ -4,6 +4,7 @@ import "filepond/dist/filepond.min.css";
 import { useState } from "react";
 import { FilePond } from "react-filepond";
 import styles from "./AddProduct.module.css";
+import AddProductForm from "./components/AddProductForm";
 
 function AddProduct() {
   const [imgFiles, setImgFiles] = useState<FilePondFile[]>([]);
@@ -24,7 +25,9 @@ function AddProduct() {
         </div>
       </div>
       <div className={styles.verticalDivisor}></div>
-      <div className={styles.rightSide}>{/* <AddProductForm /> */}</div>
+      <div className={styles.rightSide}>
+        <AddProductForm />
+      </div>
     </div>
   );
 }
