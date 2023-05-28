@@ -1,10 +1,10 @@
 import Image from "next/image";
 import { MouseEventHandler } from "react";
-import { MdAddShoppingCart } from "react-icons/md";
+import { MdAddShoppingCart, MdRemoveShoppingCart } from "react-icons/md";
 import styles from "./Product.module.css";
 
-function Product({ product }: { product: Product }) {
-  const handleClick: MouseEventHandler<SVGElement> = () => {
+function Product({ product, isCart }: { product: Product; isCart: boolean }) {
+  const handleAddToCart: MouseEventHandler<SVGElement> = () => {
     fetch("/api/shopping-cart", {
       method: "POST",
       body: JSON.stringify({ productId: product.id }),
@@ -18,6 +18,23 @@ function Product({ product }: { product: Product }) {
       })
       .catch((error) => {
         alert("Erro ao adicionar produto ao carrinho");
+      });
+  };
+
+  const handleRemoveFromCart: MouseEventHandler<SVGElement> = () => {
+    fetch("/api/shopping-cart", {
+      method: "DELETE",
+      body: JSON.stringify({ productId: product.id }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          alert("Produto removido do carrinho com sucesso");
+        } else {
+          alert("Erro ao remover produto do carrinho");
+        }
+      })
+      .catch((error) => {
+        alert("Erro ao remover produto do carrinho");
       });
   };
 
@@ -36,7 +53,14 @@ function Product({ product }: { product: Product }) {
         <span className={styles.subtitle}>Price: {product.price}</span>
         <span className={styles.subtitle}>Quantity: {product.quantity}</span>
       </div>
-      <MdAddShoppingCart className={styles.icon} onClick={handleClick} />
+      {isCart ? (
+        <MdRemoveShoppingCart
+          className={styles.icon}
+          onClick={handleRemoveFromCart}
+        />
+      ) : (
+        <MdAddShoppingCart className={styles.icon} onClick={handleAddToCart} />
+      )}
     </div>
   );
 }

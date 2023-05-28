@@ -1,39 +1,26 @@
 import { NextResponse } from "next/server";
 
-export async function GET() {
-  return NextResponse.json([
-    {
-      id: 1,
-      name: "Product 1",
-      price: 100,
-      description: "This is product 1",
-      quantity: 10,
+export async function GET(request: Request) {
+  // const { index, limit } = request.query;
+  const { searchParams } = new URL(request.url);
+  const page = Number(searchParams.get("page"));
+  const limit = Number(searchParams.get("limit"));
+  console.log("page", page);
+  console.log("limit", limit);
+  let products = [];
+  for (let i = 1 + page * limit; i <= limit + page * limit; i++) {
+    products.push({
+      id: i,
+      name: "Product " + i,
+      price: 100 * i,
+      description: "This is product " + i,
+      quantity: 10 * i,
       images: [
         "https://picsum.photos/200/300",
         "https://picsum.photos/200/300",
       ],
-    },
-    {
-      id: 2,
-      name: "Product 2",
-      price: 200,
-      description: "This is product 2",
-      quantity: 20,
-      images: [
-        "https://picsum.photos/200/300",
-        "https://picsum.photos/200/300",
-      ],
-    },
-    {
-      id: 3,
-      name: "Product 3",
-      price: 300,
-      description: "This is product 3",
-      quantity: 30,
-      images: [
-        "https://picsum.photos/200/300",
-        "https://picsum.photos/200/300",
-      ],
-    },
-  ]);
+    });
+  }
+
+  return NextResponse.json(products);
 }
