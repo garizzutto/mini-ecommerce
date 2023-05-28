@@ -1,13 +1,52 @@
 "use client";
 import { FilePondFile } from "filepond";
 import "filepond/dist/filepond.min.css";
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { FilePond } from "react-filepond";
+import { SubmitHandler, useForm } from "react-hook-form";
 import styles from "./AddProduct.module.css";
 import AddProductForm from "./components/AddProductForm";
 
 function AddProduct() {
   const [imgFiles, setImgFiles] = useState<FilePondFile[]>([]);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<ProductForm>();
+
+  const onSubmit: SubmitHandler<ProductForm> = (data) => {
+    if (imgFiles.length === 0) {
+      alert("Selecione pelo menos uma imagem");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("description", data.description);
+    formData.append("price", data.price.toString());
+    formData.append("quantity", data.quantity.toString());
+    const images = imgFiles.map((file) => {
+      //TODO: send file to image server then get the url to send it to the product server
+      formData.append("images", file.filename);
+      return file.filename;
+    });
+    fetch("/api/products", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => {
+        if (response.ok) {
+          alert("Produto adicionado com sucesso");
+        } else {
+          alert("Erro ao adicionar produto");
+        }
+      })
+      .catch((error) => {
+        alert("Erro ao adicionar produto");
+      });
+  };
   return (
     <div className={styles.container}>
       <div className={styles.leftSide}>
@@ -26,10 +65,13 @@ function AddProduct() {
       </div>
       <div className={styles.verticalDivisor}></div>
       <div className={styles.rightSide}>
-        <AddProductForm />
+        <AddProductForm
+          handleSubmit={handleSubmit(onSubmit)}
+          register={register}
+        />
       </div>
     </div>
   );
 }
 
-export default AddProduct;
+export default dynamic(() => Promise.resolve(AddProduct), { ssr: false });

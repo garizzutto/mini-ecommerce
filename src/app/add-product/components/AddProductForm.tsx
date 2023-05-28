@@ -1,17 +1,15 @@
-import { SubmitHandler, useForm } from "react-hook-form";
+import { FormEventHandler } from "react";
+import { UseFormRegister } from "react-hook-form";
 import styles from "./AddProductForm.module.css";
 
-function AddProductForm() {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<ProductForm>();
-  const onSubmit: SubmitHandler<ProductForm> = (data) => console.log(data);
+type AddProductFormProps = {
+  handleSubmit: FormEventHandler<HTMLFormElement>;
+  register: UseFormRegister<ProductForm>;
+};
 
+function AddProductForm({ handleSubmit, register }: AddProductFormProps) {
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.container}>
+    <form onSubmit={handleSubmit} className={styles.container}>
       <label className={styles.fieldDescription}>Nome do produto</label>
       <input
         className={styles.input}
