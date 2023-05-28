@@ -1,7 +1,7 @@
 "use client";
+import Product from "@/components/Product";
 import useSWR from "swr";
 import styles from "./ProductsList.module.css";
-import Product from "./components/Product";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -11,13 +11,16 @@ function ProductsList() {
     error,
     isLoading,
   } = useSWR<Products, Error>("/api/products", fetcher);
-  console.log(products);
   if (error) return <h1 className={styles.title}>Erro ao carregar produtos</h1>;
   if (isLoading)
     return <h1 className={styles.title}>Carregando produtos...</h1>;
-  return products?.map((product) => {
-    return <Product key={product.id} product={product} />;
-  });
+  return (
+    <div className={styles.container}>
+      {products?.map((product) => {
+        return <Product key={product.id} product={product} />;
+      })}
+    </div>
+  );
 }
 
 export default ProductsList;
