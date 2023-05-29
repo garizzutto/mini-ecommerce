@@ -7,7 +7,7 @@ function Product({ product, isCart }: { product: Product; isCart: boolean }) {
   const handleAddToCart: MouseEventHandler<SVGElement> = () => {
     fetch("/api/shopping-cart", {
       method: "POST",
-      body: JSON.stringify({ productId: product.id }),
+      body: JSON.stringify(product),
     })
       .then((response) => {
         if (response.ok) {
@@ -22,9 +22,8 @@ function Product({ product, isCart }: { product: Product; isCart: boolean }) {
   };
 
   const handleRemoveFromCart: MouseEventHandler<SVGElement> = () => {
-    fetch("/api/shopping-cart", {
+    fetch(`/api/shopping-cart/${product.id}`, {
       method: "DELETE",
-      body: JSON.stringify({ productId: product.id }),
     })
       .then((response) => {
         if (response.ok) {

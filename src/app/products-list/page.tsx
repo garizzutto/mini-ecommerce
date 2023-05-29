@@ -12,10 +12,8 @@ const getKey = (pageIndex: number, previousPageData: Products) => {
 };
 
 function ProductsList() {
-  const { data, error, isLoading, size, setSize } = useSWRInfinite<
-    Products,
-    Error
-  >(getKey, fetcher);
+  const { data, error, isLoading, size, setSize, isValidating } =
+    useSWRInfinite<Products, Error>(getKey, fetcher);
   const [search, setSearch] = useState<string>("");
 
   let products: Products = [];
@@ -37,7 +35,7 @@ function ProductsList() {
         return <Product key={product.id} product={product} isCart={false} />;
       })}
       <button className={styles.button} onClick={() => setSize(size + 1)}>
-        Carregar mais
+        {isValidating ? "Carregando..." : "Carregar mais"}
       </button>
     </div>
   );

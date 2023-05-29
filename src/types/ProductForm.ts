@@ -3,5 +3,5 @@ type ProductForm = {
   price: number;
   description: string;
   quantity: number;
-  image: string[];
+  images: string[];
 };

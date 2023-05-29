@@ -1,3 +1,4 @@
+import Products from "@/database/models/Products";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -5,22 +6,20 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const page = Number(searchParams.get("page"));
   const limit = Number(searchParams.get("limit"));
-  console.log("page", page);
-  console.log("limit", limit);
-  let products = [];
-  for (let i = 1 + page * limit; i <= limit + page * limit; i++) {
-    products.push({
-      id: i,
-      name: "Product " + i,
-      price: 100 * i,
-      description: "This is product " + i,
-      quantity: 10 * i,
-      images: [
-        "https://picsum.photos/200/300",
-        "https://picsum.photos/200/300",
-      ],
-    });
-  }
-
+  const products = await Products.find()
+    .skip(page * limit)
+    .limit(limit);
   return NextResponse.json(products);
+}
+
+export async function POST(req: Request, res: Response) {
+  const product = await req.json();
+  Products.create({
+    name: product.name,
+    description: product.description,
+    images: product.images,
+    price: product.price,
+    quantity: product.quantity,
+  });
+  return NextResponse.json({ message: "success" });
 }

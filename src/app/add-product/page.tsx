@@ -22,19 +22,14 @@ function AddProduct() {
       alert("Selecione pelo menos uma imagem");
       return;
     }
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("description", data.description);
-    formData.append("price", data.price.toString());
-    formData.append("quantity", data.quantity.toString());
-    const images = imgFiles.map((file) => {
+    data.images = [];
+    imgFiles.map((file) => {
       //TODO: send file to image server then get the url to send it to the product server
-      formData.append("images", file.filename);
-      return file.filename;
+      data.images.push("https://picsum.photos/200/300");
     });
     fetch("/api/products", {
       method: "POST",
-      body: formData,
+      body: JSON.stringify(data),
     })
       .then((response) => {
         if (response.ok) {
